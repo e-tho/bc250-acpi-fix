@@ -99,7 +99,7 @@ All three tables should load, with `AMD CPU` listed once as an override.
 cpupower idle-info
 ```
 
-Idle states should be POLL, C1 and C2, with C2 at address `0x414` and its usage rising while the board sits idle.
+Idle states should be POLL, C1, C2, and C3, with usage rising while the board sits idle.
 
 ```sh
 cpupower frequency-info

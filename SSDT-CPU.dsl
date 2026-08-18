@@ -1,13 +1,20 @@
 // Replaces the stock idle state table, which never loads because it targets
-// CPU definitions the firmware does not declare. This one assigns the same
-// values to the 16 definitions that do exist.
+// CPU definitions the firmware does not declare. This one covers the 16
+// definitions that do exist.
 //
 // The header must keep the stock table's identifiers with a higher revision,
 // or the kernel ignores this table.
 //
-// C2 uses the stock table's address 0x414. The processor block in the DSDT
-// implies a different one, but the CPU does enter C2 at the stock value.
-// C3 is omitted because the firmware reports it as unsupported.
+// C2 uses the stock table's address despite the DSDT's processor block
+// implying a different one. The C-state base address register (MSR
+// 0xC0010073) reads 0x413, which places the idle registers at 0x414 and
+// 0x415. C2's 400us latency is the stock value, conservative against measured
+// wake times.
+//
+// C3 is published despite the FADT reporting it as unsupported, since the CPU
+// enters it and exits with higher latency than C2, indicating a functional
+// deeper state. C3's 600us latency is an estimated value, conservative
+// against measured wake times.
 
 DefinitionBlock ("", "SSDT", 1, "AMD", "AMD CPU", 0x00000002)
 {
@@ -30,9 +37,9 @@ DefinitionBlock ("", "SSDT", 1, "AMD", "AMD CPU", 0x00000002)
 
     Method (BCST, 0, NotSerialized)
     {
-        Return (Package (0x03)
+        Return (Package (0x04)
         {
-            0x02,
+            0x03,
             Package (0x04)
             {
                 ResourceTemplate () { Register (FFixedHW, 0x02, 0x02, 0x0000000000000000,,) },
@@ -42,6 +49,11 @@ DefinitionBlock ("", "SSDT", 1, "AMD", "AMD CPU", 0x00000002)
             {
                 ResourceTemplate () { Register (SystemIO, 0x08, 0x00, 0x0000000000000414, 0x01,) },
                 0x02, 0x0190, 0x00000000
+            },
+            Package (0x04)
+            {
+                ResourceTemplate () { Register (SystemIO, 0x08, 0x00, 0x0000000000000415, 0x01,) },
+                0x03, 0x0258, 0x00000000
             }
         })
     }
