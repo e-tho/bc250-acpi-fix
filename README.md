@@ -2,7 +2,10 @@
 
 ACPI table overrides providing CPU idle states and frequency scaling for the AMD BC-250 on Linux.
 
-Works on stock 6-core and [unlocked](https://github.com/rw-r-r-0644/bc250-core-unlock) 8-core boards across all BIOS versions.
+Works on stock 6-core and [unlocked](https://github.com/rw-r-r-0644/bc250-core-unlock) 8-core boards across all stock BIOS versions.
+
+> [!IMPORTANT]
+> Modded BIOSes may already provide their own ACPI fixes. To avoid conflicts, disable ACPI injection in the firmware setup if available, or rely on the BIOS-provided tables only.
 
 ## Issues
 
