@@ -1,13 +1,18 @@
 // Replaces the stock idle state table, which never loads because it targets
-// CPU definitions the firmware does not declare. This one assigns the same
-// values to the 16 definitions that do exist.
+// CPU definitions the firmware does not declare. This one covers the 16
+// definitions that do exist.
 //
 // The header must keep the stock table's identifiers with a higher revision,
 // or the kernel ignores this table.
 //
-// C2 uses the stock table's address 0x414. The processor block in the DSDT
-// implies a different one, but the CPU does enter C2 at the stock value.
-// C3 is omitted because the firmware reports it as unsupported.
+// C2 uses the stock table's address despite the DSDT's processor block
+// implying a different one. The C-state base address register (MSR
+// 0xC0010073) reads 0x413, which places the idle registers at 0x414 and
+// 0x415. C2's 400us latency is the stock value, conservative against measured
+// wake times.
+//
+// C3 is omitted because publishing it causes system freezes on this
+// board, and the firmware (FADT) correctly reports it as unsupported.
 
 DefinitionBlock ("", "SSDT", 1, "AMD", "AMD CPU", 0x00000002)
 {
